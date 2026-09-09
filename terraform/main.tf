@@ -16,6 +16,6 @@ terraform {
 }
 
 provider "hcloud" {
-    token = var.hcloud_token
+    token = var.HCLOUD_TOKEN
   
 }
