@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-TS_KEY="${tailscale_auth_key_master}"
+TS_KEY="${TAILSCALE_AUTH_KEY_MASTER}"
 HOSTNAME="${Hostname}"
 
 echo "Starting Tailscale bootstrap..."
