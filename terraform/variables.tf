@@ -15,5 +15,5 @@ variable "TAILSCALE_AUTH_KEY_MASTER" {
 
 variable "TAILSCALE_MASTER_HOSTNAME" {
   type = string
-  sensitive = true
+  sensitive = false
 }
