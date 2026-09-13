@@ -12,7 +12,7 @@ resource "hcloud_server" "main" {
   }
 
   user_data = templatefile("${path.module}/templates/bootstrap.sh.tpl", {
-    tailscale_auth_key = var.tailscale_auth_key_master
+    tailscale_auth_key = var.TAILSCALE_AUTH_KEY_MASTER
     Hostname            = "main-node"
   })
 
