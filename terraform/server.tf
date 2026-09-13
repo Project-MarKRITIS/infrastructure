@@ -5,9 +5,16 @@ resource "hcloud_server" "main" {
   location = "fsn1"
   ssh_keys = data.hcloud_ssh_keys.team.ssh_keys[*].id
   firewall_ids = [hcloud_firewall.main.id]
+
   network {
     network_id = hcloud_network.main.id
     ip = "10.0.1.10"
   }
+
+  user_data = templatefile("${path.module}/templates/bootstrap.sh.tpl", {
+    tailscale_auth_key = var.tailscale_auth_key_master
+    Hostname            = "main-node"
+  })
+
   depends_on = [ hcloud_network_subnet.main ]
 }
