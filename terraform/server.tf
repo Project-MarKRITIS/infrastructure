@@ -13,7 +13,7 @@ resource "hcloud_server" "main" {
 
   user_data = templatefile("${path.module}/templates/bootstrap.sh.tpl", {
     TAILSCALE_AUTH_KEY_MASTER = var.TAILSCALE_AUTH_KEY_MASTER
-    Hostname            = "main-node"
+    TAILSCALE_MASTER_HOSTNAME = var.TAILSCALE_MASTER_HOSTNAME
   })
 
   depends_on = [ hcloud_network_subnet.main ]
