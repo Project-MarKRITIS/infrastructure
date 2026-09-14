@@ -17,8 +17,3 @@ variable "TAILSCALE_MASTER_HOSTNAME" {
   type = string
   sensitive = false
 }
-
-variable "DOMAIN_ID" {
-  type = string
-  sensitive = true
-}
