@@ -1,0 +1,2 @@
+- import_playbook: playbooks/hardening.yml
+- import_playbook: playbooks/k3s.yml
