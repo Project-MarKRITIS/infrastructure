@@ -1,0 +1,20 @@
+resource "hcloud_server" "main" {
+  name = "main-node"
+  server_type = "cx23"
+  image = "ubuntu-24.04"
+  location = "fsn1"
+  ssh_keys = data.hcloud_ssh_keys.team.ssh_keys[*].id
+  firewall_ids = [hcloud_firewall.main.id]
+
+  network {
+    network_id = hcloud_network.main.id
+    ip = "10.0.1.10"
+  }
+
+  user_data = templatefile("${path.module}/templates/bootstrap.sh.tpl", {
+    TAILSCALE_AUTH_KEY_MASTER = var.TAILSCALE_AUTH_KEY_MASTER
+    TAILSCALE_MASTER_HOSTNAME = var.TAILSCALE_MASTER_HOSTNAME
+  })
+
+  depends_on = [ hcloud_network_subnet.main ]
+}
