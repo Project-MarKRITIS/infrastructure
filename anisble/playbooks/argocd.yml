@@ -1,0 +1,40 @@
+- name: Install ArgoCD
+  hosts: k3s_master
+  become: true
+  vars:
+    argocd_version: "v3.5.2"
+  environment:
+    KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+  tasks:
+    - name: Ensure argocd namespace exists
+      shell: |
+        kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
+      changed_when: false
+
+    - name: Apply ArgoCD install manifest
+      command: >
+        kubectl apply -n argocd --server-side --force-conflicts
+        -f https://raw.githubusercontent.com/argoproj/argo-cd/{{ argocd_version }}/manifests/install.yaml
+      register: argocd_apply
+      changed_when: "'configured' in argocd_apply.stdout or 'created' in argocd_apply.stdout"
+
+    - name: Wait for Application CRD to be established
+      command: kubectl wait --for=condition=Established crd/applications.argoproj.io --timeout=60s
+      changed_when: false
+
+    - name: Disable internal TLS on argocd-server
+      command: >
+        kubectl -n argocd patch configmap argocd-cmd-params-cm
+        --type merge -p '{"data":{"server.insecure":"true"}}'
+      register: insecure_patch
+      changed_when: "'configured' in insecure_patch.stdout or 'created' in insecure_patch.stdout"
+
+    - name: Restart argocd-server to apply config
+      command: kubectl -n argocd rollout restart deployment argocd-server
+      when: insecure_patch.changed
+      changed_when: true
+
+    - name: Apply root Application
+      command: kubectl apply -f https://raw.githubusercontent.com/Project-MarKRITIS/platform/main/root-app.yaml
+      register: root_app_apply
+      changed_when: "'configured' in root_app_apply.stdout or 'created' in root_app_apply.stdout"
