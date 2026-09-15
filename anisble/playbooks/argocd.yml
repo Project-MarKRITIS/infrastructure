@@ -27,7 +27,7 @@
         kubectl -n argocd patch configmap argocd-cmd-params-cm
         --type merge -p '{"data":{"server.insecure":"true"}}'
       register: insecure_patch
-      changed_when: "'configured' in insecure_patch.stdout or 'created' in insecure_patch.stdout"
+      changed_when: "'not patched' not in insecure_patch.stdout"
 
     - name: Restart argocd-server to apply config
       command: kubectl -n argocd rollout restart deployment argocd-server
