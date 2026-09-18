@@ -38,10 +38,10 @@
         regexp: '^#?PubkeyAuthentication'
         line: 'PubkeyAuthentication yes'
         validate: '/usr/sbin/sshd -t -f %s'
-      notify: Restart sshd
+      notify: Restart ssh
 
   handlers:
-    - name: Restart sshd
+    - name: Restart ssh
       service:
-        name: sshd
+        name: ssh
         state: restarted
