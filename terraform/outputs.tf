@@ -9,3 +9,11 @@ output "server_ipv6" {
 output "tailscale_master_hostname" {
   value = var.TAILSCALE_MASTER_HOSTNAME
 }
+
+output "data_volume_id" {
+  value = hcloud_volume.data.id
+}
+
+output "data_volume_device" {
+  value = hcloud_volume.data.linux_device
+}
