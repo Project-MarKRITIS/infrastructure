@@ -3,7 +3,7 @@
   become: true
   tasks:
     - name: Check if volume is formatted
-      command: blkid /dev/disk/by-id/scsi-0HC_Volume_{{ hcloud_volume_id }}
+      command: blkid /dev/disk/by-id/scsi-0HC_Volume_{{ HCLOUD_VOLUME_ID }}
       register: blkid_check
       failed_when: false
       changed_when: false
@@ -16,6 +16,6 @@
     - name: Mount volume
       mount:
         path: /mnt/data
-        src: /dev/disk/by-id/scsi-0HC_Volume_{{ hcloud_volume_id }}
+        src: /dev/disk/by-id/scsi-0HC_Volume_{{ HCLOUD_VOLUME_ID }}
         fstype: ext4
         state: mounted
