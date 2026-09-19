@@ -12,3 +12,10 @@
         src: /etc/rancher/k3s/k3s.yaml
         dest: ./kubeconfig
         flat: true
+    
+    - name: Point local-path-provisioner to data volume
+      command: >
+        kubectl -n kube-system patch configmap local-path-config
+        --type merge -p '{"data":{"config.json":"{\"nodePathMap\":[{\"node\":\"DEFAULT_PATH_FOR_NON_LISTED_NODES\",\"paths\":[\"/mnt/data\"]}]}"}}'
+      register: storage_patch
+      changed_when: "'not patched' not in storage_patch.stdout"
