@@ -10,7 +10,3 @@ resource "hcloud_volume_attachment" "data" {
   server_id = hcloud_server.main.id
   automount = false
 }
-
-output "data_volume_device" {
-  value = hcloud_volume.data.linux_device
-}

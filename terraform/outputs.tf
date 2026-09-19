@@ -13,3 +13,7 @@ output "tailscale_master_hostname" {
 output "data_volume_id" {
   value = hcloud_volume.data.id
 }
+
+output "data_volume_device" {
+  value = hcloud_volume.data.linux_device
+}

@@ -38,7 +38,7 @@ jobs:
             --header "Authorization: Bearer ${{ secrets.TFC_TOKEN }}" \
             --header "Content-Type: application/vnd.api+json" \
             https://app.terraform.io/api/v2/workspaces/ws-xxxxxxxx/current-state-version-outputs)
-          echo "HCLOUD_VOLUME_ID=$(echo $OUTPUTS | jq -r '.data[] | select(.attributes.name=="data_volume_id") | .attributes.value')" >> "$GITHUB_ENV"
+          echo "DATA_VOLUME_DEVICE=$(echo $OUTPUTS | jq -r '.data[] | select(.attributes.name=="data_volume_device") | .attributes.value')" >> "$GITHUB_ENV"
 
       - name: Install Ansible
         run: pip install ansible

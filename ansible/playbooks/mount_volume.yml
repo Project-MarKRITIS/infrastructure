@@ -3,7 +3,7 @@
   become: true
   tasks:
     - name: Check if volume is formatted
-      command: blkid /dev/disk/by-id/scsi-0HC_Volume_{{ HCLOUD_VOLUME_ID }}
+      command: blkid "{{ lookup('env', 'DATA_VOLUME_DEVICE') }}"
       register: blkid_check
       failed_when: false
       changed_when: false
@@ -16,6 +16,6 @@
     - name: Mount volume
       mount:
         path: /mnt/data
-        src: /dev/disk/by-id/scsi-0HC_Volume_{{ HCLOUD_VOLUME_ID }}
+        src: "{{ lookup('env', 'DATA_VOLUME_DEVICE') }}"
         fstype: ext4
         state: mounted
