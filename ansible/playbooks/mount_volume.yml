@@ -2,12 +2,6 @@
   hosts: k3s_master
   become: true
   tasks:
-    - name: Check if volume is formatted
-      command: blkid "{{ lookup('env', 'DATA_VOLUME_DEVICE') }}"
-      register: blkid_check
-      failed_when: false
-      changed_when: false
-
     - name: Create mount point
       file:
         path: /mnt/data
