@@ -2,13 +2,7 @@ resource "hcloud_firewall" "main" {
   name = "main-firewall"
 
   rule {
-    direction = "in"
-    protocol = "tcp"
-    port = "22"
-    source_ips = ["0.0.0.0/0", "::/0"]
-  }
-
-  rule {
+    description = "HTTP traffic"
     direction = "in"
     protocol = "tcp"
     port = "80"
@@ -16,6 +10,7 @@ resource "hcloud_firewall" "main" {
   }
 
   rule {
+    description = "HTTPS traffic"
     direction = "in"
     protocol = "tcp"
     port = "443"
