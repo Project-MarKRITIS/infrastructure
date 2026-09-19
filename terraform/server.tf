@@ -3,7 +3,10 @@ resource "hcloud_server" "main" {
   server_type = "cx23"
   image = "ubuntu-24.04"
   location = "fsn1"
-  ssh_keys = data.hcloud_ssh_keys.team.ssh_keys[*].id
+  ssh_keys = concat(
+    data.hcloud_ssh_keys.team.ssh_keys[*].id,
+    data.hcloud_ssh_keys.ci.ssh_keys[*].id
+  )
   firewall_ids = [hcloud_firewall.main.id]
 
   network {
