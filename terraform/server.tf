@@ -19,5 +19,11 @@ resource "hcloud_server" "main" {
     TAILSCALE_MASTER_HOSTNAME = var.TAILSCALE_MASTER_HOSTNAME
   })
 
+  lifecycle {
+    ignore_changes = [
+      user_data,
+    ]
+  }
+
   depends_on = [ hcloud_network_subnet.main ]
 }

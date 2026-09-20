@@ -1,0 +1,15 @@
+- name: Mount data volume
+  hosts: k3s_master
+  become: true
+  tasks:
+    - name: Create mount point
+      file:
+        path: /mnt/data
+        state: directory
+
+    - name: Mount volume
+      mount:
+        path: /mnt/data
+        src: "{{ lookup('env', 'DATA_VOLUME_DEVICE') }}"
+        fstype: ext4
+        state: mounted

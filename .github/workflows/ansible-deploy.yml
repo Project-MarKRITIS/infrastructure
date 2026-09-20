@@ -10,11 +10,16 @@ on:
       - 'ansible/**'
   workflow_dispatch:
 
+env:
+  TAILNET_DOMAIN: ${{ secrets.TAILNET_DOMAIN }}
+  TFC_TOKEN: ${{ secrets.TFC_TOKEN }}
+  GH_APP_ID: ${{ secrets.GH_APP_ID }}
+  GH_APP_INSTALLATION_ID: ${{ secrets.GH_APP_INSTALLATION_ID }}
+  GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
 jobs:
   ansible:
     runs-on: ubuntu-latest
-    env:
-      TAILNET_DOMAIN: ${{ secrets.TAILNET_DOMAIN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -31,6 +36,14 @@ jobs:
 
       - name: Disable strict host key checking
         run: echo "StrictHostKeyChecking no" >> ~/.ssh/config
+
+      - name: Fetch Terraform outputs
+        run: |
+          OUTPUTS=$(curl -s \
+            --header "Authorization: Bearer $TFC_TOKEN" \
+            --header "Content-Type: application/vnd.api+json" \
+            https://app.terraform.io/api/v2/workspaces/${{ secrets.TFC_WORKSPACE_ID }}/current-state-version-outputs)
+          echo "DATA_VOLUME_DEVICE=$(echo $OUTPUTS | jq -r '.data[] | select(.attributes.name=="data_volume_device") | .attributes.value')" >> "$GITHUB_ENV"
 
       - name: Install Ansible
         run: pip install ansible
