@@ -33,6 +33,16 @@
       command: kubectl -n argocd rollout restart deployment argocd-server
       when: insecure_patch.changed
       changed_when: true
+    
+    - name: Get argocd-server NodePort
+      command: kubectl -n argocd get svc argocd-server -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}'
+      register: argocd_nodeport
+      changed_when: false
+
+    - name: Configure tailscale serve for ArgoCD
+      command: tailscale serve --bg https / http://localhost:{{ argocd_nodeport.stdout }}
+      register: serve_config
+      changed_when: "'Available within' in serve_config.stdout"
 
     - name: Apply root Application
       command: kubectl apply -f https://raw.githubusercontent.com/Project-MarKRITIS/platform/main/root-app.yaml
