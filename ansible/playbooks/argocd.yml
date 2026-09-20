@@ -34,13 +34,18 @@
       when: insecure_patch.changed
       changed_when: true
     
+    - name: Patch argocd-server service to NodePort
+      command: kubectl -n argocd patch svc argocd-server -p '{"spec":{"type":"NodePort"}}'
+      register: svc_patch
+      changed_when: "'not patched' not in svc_patch.stdout"
+
     - name: Get argocd-server NodePort
       command: kubectl -n argocd get svc argocd-server -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}'
       register: argocd_nodeport
       changed_when: false
 
     - name: Configure tailscale serve for ArgoCD
-      command: tailscale serve --bg https / http://localhost:{{ argocd_nodeport.stdout }}
+      command: tailscale serve --bg http://localhost:{{ argocd_nodeport.stdout }}
       register: serve_config
       changed_when: "'Available within' in serve_config.stdout"
 
