@@ -1,6 +1,6 @@
 resource "hcloud_server" "main" {
   name = "main-node"
-  server_type = "cx23"
+  server_type = "cx33"
   image = "ubuntu-24.04"
   location = "fsn1"
   ssh_keys = concat(
