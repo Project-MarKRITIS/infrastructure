@@ -12,6 +12,7 @@ on:
 
 env:
   TAILNET_DOMAIN: ${{ secrets.TAILNET_DOMAIN }}
+  PROJ_SERVER_DOMAIN: ${{ vars.PROJ_SERVER_DOMAIN }}
   TFC_TOKEN: ${{ secrets.TFC_TOKEN }}
   GH_APP_ID: ${{ secrets.GH_APP_ID }}
   GH_APP_INSTALLATION_ID: ${{ secrets.GH_APP_INSTALLATION_ID }}
