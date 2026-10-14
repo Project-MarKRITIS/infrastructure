@@ -32,7 +32,7 @@ flowchart LR
     VOL[("Volume 20 GB<br/>/mnt/data")]
 
     subgraph SRV["Server main-node (cx33)"]
-      TSD["tailscaled<br/>Tailnet-Zugang"]
+      TSD["tailscaled<br/>Tailnet-Entry"]
       SSH["SSH, key only"]
       subgraph K3S["k3s (single node)"]
         TRF["Traefik<br/>TLS + Basic Auth"]
