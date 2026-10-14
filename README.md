@@ -11,6 +11,63 @@ Server infrastructure for the MarKRITIS project, which trains and documents a To
 | Access | Tailscale | Private SSH and admin access |
 | CI/CD | GitHub Actions | Runs Ansible over the tailnet |
 
+
+```mermaid
+flowchart LR
+  subgraph EXT["Extern"]
+    USER["User in Internet"]
+    TEAM["Team Laptops"]
+  end
+
+  subgraph GH["GitHub"]
+    GHA["GitHub Actions<br/>tag:ci"]
+    PREPO["platform repo"]
+  end
+
+  TFC["Terraform Cloud"]
+
+  subgraph HZ["Hetzner Cloud (fsn1)"]
+    DNS["DNS<br/>wildcard A + root A"]
+    FW["Firewall<br/>only 80 and 443"]
+    VOL[("Volume 20 GB<br/>/mnt/data")]
+
+    subgraph SRV["Server main-node (cx33)"]
+      TSD["tailscaled<br/>Tailnet-Zugang"]
+      SSH["SSH, key only"]
+      subgraph K3S["k3s (single node)"]
+        TRF["Traefik<br/>TLS + Basic Auth"]
+        MLF["MLflow"]
+        PG[("Postgres")]
+        ARGO["ArgoCD<br/>via tailscale serve"]
+        CM["cert-manager<br/>Let's Encrypt"]
+      end
+    end
+  end
+
+  S3[("Hetzner Object Storage<br/>MLflow Artifacts")]
+
+  %% Public Path
+  USER -->|"HTTPS mlflow.domain"| DNS
+  DNS --> FW
+  FW -->|"80 / 443"| TRF
+  TRF --> MLF
+  CM -.->|"Certificates"| TRF
+  MLF --> PG
+  MLF --> S3
+  PG --- VOL
+
+  %% Tailnet Path
+  TEAM ==>|"Tailnet"| TSD
+  GHA ==>|"Tailnet, Ansible"| TSD
+  TSD --> SSH
+  TSD --> ARGO
+
+  %% Provisioning and GitOps
+  TFC -->|"Hetzner API"| HZ
+  ARGO -->|"pull"| PREPO
+  ARGO -.->|"sync"| MLF
+```
+
 ## Structure
 
 ```
